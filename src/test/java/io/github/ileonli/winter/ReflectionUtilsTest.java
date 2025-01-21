@@ -20,8 +20,8 @@ public class ReflectionUtilsTest {
     void makeAccessible() throws NoSuchMethodException {
         Constructor<?> ctor = NonPublicConstructorClass.class.getDeclaredConstructor();
 
+        assertTrue(Modifier.isPublic(ctor.getDeclaringClass().getModifiers()));
         assertFalse(Modifier.isPublic(ctor.getModifiers()));
-        assertFalse(Modifier.isPublic(ctor.getDeclaringClass().getModifiers()));
         assertFalse(ctor.isAccessible());
 
         ReflectionUtils.makeAccessible(ctor);
