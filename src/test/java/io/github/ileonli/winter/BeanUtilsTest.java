@@ -8,7 +8,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class BeanUtilsTest {
+public class BeanUtilsTest {
 
     @Test
     void instantiateClassWithNoArgs() throws NoSuchMethodException {

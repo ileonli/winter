@@ -8,7 +8,7 @@ import java.lang.reflect.Modifier;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ReflectionUtilsTest {
+public class ReflectionUtilsTest {
 
     @Test
     @SuppressWarnings("deprecation")
