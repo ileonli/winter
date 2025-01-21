@@ -10,6 +10,68 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BeanUtilsTest {
 
+    public static class TestClass {
+
+        private int a;
+        private String b;
+
+        public TestClass() {
+        }
+
+        public TestClass(int a, String b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        protected TestClass(int a, String b, int c) {
+            this.a = a + c;
+            this.b = b;
+        }
+
+
+        private TestClass(int a, int b, String c) {
+            this.a = a + b;
+            this.b = c;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(int a) {
+            this.a = a;
+        }
+
+        public String getB() {
+            return b;
+        }
+
+        public void setB(String b) {
+            this.b = b;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            TestClass testClass = (TestClass) o;
+            return a == testClass.a && Objects.equals(b, testClass.b);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(a, b);
+        }
+
+        @Override
+        public String toString() {
+            return "TestClass{" +
+                    "a=" + a +
+                    ", b='" + b + '\'' +
+                    '}';
+        }
+
+    }
+
     @Test
     void instantiateClassWithNoArgs() throws NoSuchMethodException {
         Class<TestClass> c = TestClass.class;
@@ -56,64 +118,4 @@ public class BeanUtilsTest {
 
 }
 
-class TestClass {
 
-    private int a;
-    private String b;
-
-    public TestClass() {
-    }
-
-    public TestClass(int a, String b) {
-        this.a = a;
-        this.b = b;
-    }
-
-    protected TestClass(int a, String b, int c) {
-        this.a = a + c;
-        this.b = b;
-    }
-
-
-    private TestClass(int a, int b, String c) {
-        this.a = a + b;
-        this.b = c;
-    }
-
-    public int getA() {
-        return a;
-    }
-
-    public void setA(int a) {
-        this.a = a;
-    }
-
-    public String getB() {
-        return b;
-    }
-
-    public void setB(String b) {
-        this.b = b;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        TestClass testClass = (TestClass) o;
-        return a == testClass.a && Objects.equals(b, testClass.b);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(a, b);
-    }
-
-    @Override
-    public String toString() {
-        return "TestClass{" +
-                "a=" + a +
-                ", b='" + b + '\'' +
-                '}';
-    }
-
-}

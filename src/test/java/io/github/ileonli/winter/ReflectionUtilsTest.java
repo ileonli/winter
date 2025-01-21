@@ -10,6 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReflectionUtilsTest {
 
+    public static class NonPublicConstructorClass {
+        private NonPublicConstructorClass() {
+        }
+    }
+
     @Test
     @SuppressWarnings("deprecation")
     void makeAccessible() throws NoSuchMethodException {
@@ -23,9 +28,4 @@ public class ReflectionUtilsTest {
         assertTrue(ctor.isAccessible());
     }
 
-}
-
-class NonPublicConstructorClass {
-    private NonPublicConstructorClass() {
-    }
 }
