@@ -3,19 +3,22 @@ package io.github.ileonli.winter.factory.support;
 import io.github.ileonli.winter.PropertyValue;
 import io.github.ileonli.winter.PropertyValues;
 import io.github.ileonli.winter.factory.config.BeanDefinition;
+import io.github.ileonli.winter.factory.config.BeanReference;
 import org.junit.jupiter.api.Test;
-
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class DefaultListableBeanFactoryTest {
 
+    public static class InjectionBean {
+    }
+
     public static class TestClass {
 
         private int a;
         private String b;
+        private InjectionBean bean;
 
         public TestClass() {
         }
@@ -23,6 +26,10 @@ public class DefaultListableBeanFactoryTest {
         public TestClass(int a, String b) {
             this.a = a;
             this.b = b;
+        }
+
+        public TestClass(InjectionBean bean) {
+            this.bean = bean;
         }
 
         public int getA() {
@@ -41,22 +48,19 @@ public class DefaultListableBeanFactoryTest {
             this.b = b;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (o == null || getClass() != o.getClass()) return false;
-            TestClass testClass = (TestClass) o;
-            return a == testClass.a && Objects.equals(b, testClass.b);
+        public InjectionBean getBean() {
+            return bean;
         }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(a, b);
+        public void setBean(InjectionBean bean) {
+            this.bean = bean;
         }
 
     }
 
+
     @Test
-    public void singletonObjectTest() {
+    public void singletonObject() {
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         beanFactory.registerBeanDefinition("testClass", new BeanDefinition(TestClass.class));
 
@@ -68,7 +72,7 @@ public class DefaultListableBeanFactoryTest {
     }
 
     @Test
-    public void applyPropertyValuesTest() {
+    public void applyPropertyValues() {
         PropertyValues pvs = new PropertyValues();
         pvs.addPropertyValue(new PropertyValue("a", 10));
         pvs.addPropertyValue(new PropertyValue("b", "test"));
@@ -81,6 +85,21 @@ public class DefaultListableBeanFactoryTest {
         TestClass testClass = (TestClass) beanFactory.getBean("testClass");
         assertEquals(10, testClass.getA());
         assertEquals("test", testClass.getB());
+    }
+
+    @Test
+    public void applyPropertyValuesWithBeanReference() {
+        PropertyValues pvs = new PropertyValues();
+        pvs.addPropertyValue(new PropertyValue("bean", new BeanReference("bean")));
+
+        BeanDefinition bd = new BeanDefinition(TestClass.class, pvs);
+
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        beanFactory.registerBeanDefinition("testClass", bd);
+        beanFactory.registerBeanDefinition("bean", new BeanDefinition(InjectionBean.class));
+
+        TestClass testClass = (TestClass) beanFactory.getBean("testClass");
+        assertEquals(beanFactory.getBean("bean"), testClass.getBean());
     }
 
 }

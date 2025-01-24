@@ -1,11 +1,13 @@
 package io.github.ileonli.winter.factory.support;
 
-import io.github.ileonli.winter.*;
+import io.github.ileonli.winter.BeanUtils;
+import io.github.ileonli.winter.BeansException;
+import io.github.ileonli.winter.PropertyValue;
+import io.github.ileonli.winter.PropertyValues;
 import io.github.ileonli.winter.factory.config.BeanDefinition;
+import io.github.ileonli.winter.factory.config.BeanReference;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
 
@@ -55,16 +57,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeansException("Property value for field '" + fieldName + "' is null");
         }
 
+        if (value instanceof BeanReference br) {
+            value = getBean(br.getBeanName());
+        }
+
         try {
-            Field field = beanClass.getDeclaredField(fieldName);
-            Class<?> fieldType = field.getType();
-
-            String setMethodName = BeanUtils.fieldNameToSetMethodName(fieldName);
-            Method setMethod = beanClass.getDeclaredMethod(setMethodName, fieldType);
-
-            ReflectionUtils.makeAccessible(setMethod);
-
-            setMethod.invoke(bean, value);
+            BeanUtils.injectFieldValue(beanClass, bean, fieldName, value);
         } catch (NoSuchFieldException e) {
             throw new BeansException("No such field '" + fieldName + "' in class " + beanClass.getName(), e);
         } catch (NoSuchMethodException e) {
