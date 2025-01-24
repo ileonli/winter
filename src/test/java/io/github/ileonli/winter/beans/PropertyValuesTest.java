@@ -1,4 +1,4 @@
-package io.github.ileonli.winter;
+package io.github.ileonli.winter.beans;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

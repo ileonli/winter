@@ -1,6 +1,6 @@
-package io.github.ileonli.winter.factory.support;
+package io.github.ileonli.winter.beans.factory.support;
 
-import io.github.ileonli.winter.factory.config.SingletonBeanRegistry;
+import io.github.ileonli.winter.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.HashMap;
 import java.util.Map;

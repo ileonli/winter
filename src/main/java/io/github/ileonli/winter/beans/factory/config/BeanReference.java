@@ -1,4 +1,4 @@
-package io.github.ileonli.winter.factory.config;
+package io.github.ileonli.winter.beans.factory.config;
 
 import java.util.Objects;
 

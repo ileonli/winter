@@ -1,4 +1,4 @@
-package io.github.ileonli.winter;
+package io.github.ileonli.winter.beans;
 
 import java.util.Objects;
 

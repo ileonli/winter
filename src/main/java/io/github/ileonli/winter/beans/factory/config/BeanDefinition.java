@@ -1,6 +1,6 @@
-package io.github.ileonli.winter.factory.config;
+package io.github.ileonli.winter.beans.factory.config;
 
-import io.github.ileonli.winter.PropertyValues;
+import io.github.ileonli.winter.beans.PropertyValues;
 
 import java.util.Objects;
 

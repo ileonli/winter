@@ -1,4 +1,4 @@
-package io.github.ileonli.winter.factory.support;
+package io.github.ileonli.winter.beans.factory.support;
 
 import org.junit.jupiter.api.Test;
 

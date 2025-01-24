@@ -1,9 +1,9 @@
-package io.github.ileonli.winter.factory.support;
+package io.github.ileonli.winter.beans.factory.support;
 
-import io.github.ileonli.winter.PropertyValue;
-import io.github.ileonli.winter.PropertyValues;
-import io.github.ileonli.winter.factory.config.BeanDefinition;
-import io.github.ileonli.winter.factory.config.BeanReference;
+import io.github.ileonli.winter.beans.PropertyValue;
+import io.github.ileonli.winter.beans.PropertyValues;
+import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
+import io.github.ileonli.winter.beans.factory.config.BeanReference;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

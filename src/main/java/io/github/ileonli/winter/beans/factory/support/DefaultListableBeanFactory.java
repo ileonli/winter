@@ -1,7 +1,7 @@
-package io.github.ileonli.winter.factory.support;
+package io.github.ileonli.winter.beans.factory.support;
 
-import io.github.ileonli.winter.BeansException;
-import io.github.ileonli.winter.factory.config.BeanDefinition;
+import io.github.ileonli.winter.beans.BeansException;
+import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 
 import java.util.HashMap;
 import java.util.Map;

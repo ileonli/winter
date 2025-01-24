@@ -1,8 +1,8 @@
-package io.github.ileonli.winter.factory.support;
+package io.github.ileonli.winter.beans.factory.support;
 
-import io.github.ileonli.winter.BeansException;
-import io.github.ileonli.winter.factory.BeanFactory;
-import io.github.ileonli.winter.factory.config.BeanDefinition;
+import io.github.ileonli.winter.beans.BeansException;
+import io.github.ileonli.winter.beans.factory.BeanFactory;
+import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
