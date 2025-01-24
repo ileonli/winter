@@ -1,10 +1,16 @@
 package io.github.ileonli.winter.beans.factory.support;
 
 import io.github.ileonli.winter.beans.BeansException;
-import io.github.ileonli.winter.beans.factory.BeanFactory;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
+import io.github.ileonli.winter.beans.factory.config.BeanPostProcessor;
+import io.github.ileonli.winter.beans.factory.config.ConfigurableBeanFactory;
 
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -19,6 +25,15 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
         BeanDefinition bd = getBeanDefinition(name);
         return createBean(name, bd);
+    }
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
     }
 
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;

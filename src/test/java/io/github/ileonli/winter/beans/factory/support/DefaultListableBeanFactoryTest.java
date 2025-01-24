@@ -1,13 +1,15 @@
 package io.github.ileonli.winter.beans.factory.support;
 
+import io.github.ileonli.winter.beans.BeansException;
 import io.github.ileonli.winter.beans.PropertyValue;
 import io.github.ileonli.winter.beans.PropertyValues;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
+import io.github.ileonli.winter.beans.factory.config.BeanFactoryPostProcessor;
+import io.github.ileonli.winter.beans.factory.config.BeanPostProcessor;
 import io.github.ileonli.winter.beans.factory.config.BeanReference;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultListableBeanFactoryTest {
 
@@ -100,6 +102,60 @@ public class DefaultListableBeanFactoryTest {
 
         TestClass testClass = (TestClass) beanFactory.getBean("testClass");
         assertEquals(beanFactory.getBean("bean"), testClass.getBean());
+    }
+
+    @Test
+    public void beanFactoryPostProcessor() {
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        beanFactory.registerBeanDefinition("testClass", new BeanDefinition(TestClass.class));
+
+        BeanFactoryPostProcessor postProcessor = cbf -> {
+            BeanDefinition bean = cbf.getBeanDefinition("testClass");
+            assertNotNull(bean);
+
+            DefaultListableBeanFactory dbf = (DefaultListableBeanFactory) cbf;
+            dbf.registerBeanDefinition(
+                    "injectionBean", new BeanDefinition(InjectionBean.class));
+        };
+        postProcessor.postProcessBeanFactory(beanFactory);
+
+        TestClass testClass = (TestClass) beanFactory.getBean("testClass");
+        assertNotNull(testClass);
+
+        InjectionBean injectionBean = (InjectionBean) beanFactory.getBean("injectionBean");
+        assertNotNull(injectionBean);
+    }
+
+    @Test
+    public void beanPostProcessor() {
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        beanFactory.registerBeanDefinition("testClass", new BeanDefinition(TestClass.class));
+        beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+                if (bean instanceof TestClass tc) {
+                    tc.setA(10);
+                    tc.setB("test");
+                }
+                return bean;
+            }
+
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+                if (bean instanceof TestClass tc) {
+                    assertEquals(10, tc.getA());
+                    assertEquals("test", tc.getB());
+
+                    tc.setA(20);
+                    tc.setB("testtest");
+                }
+                return bean;
+            }
+        });
+
+        TestClass testClass = (TestClass) beanFactory.getBean("testClass");
+        assertEquals(20, testClass.getA());
+        assertEquals("testtest", testClass.getB());
     }
 
 }

@@ -5,11 +5,12 @@ import io.github.ileonli.winter.beans.BeansException;
 import io.github.ileonli.winter.beans.PropertyValue;
 import io.github.ileonli.winter.beans.PropertyValues;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
+import io.github.ileonli.winter.beans.factory.config.BeanPostProcessor;
 import io.github.ileonli.winter.beans.factory.config.BeanReference;
 
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
     private final InstantiationStrategy instantiationStrategy;
 
@@ -23,10 +24,28 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected Object doCreateBean(String beanName, BeanDefinition beanDefinition) throws BeansException {
-        Object instantiate = instantiationStrategy.instantiate(beanDefinition);
-        applyPropertyValues(beanName, instantiate, beanDefinition);
-        addSingleton(beanName, instantiate);
-        return instantiate;
+        Object bean;
+        try {
+            bean = createBeanInstance(beanDefinition);
+            applyPropertyValues(beanName, bean, beanDefinition);
+            bean = initializeBean(beanName, bean, beanDefinition);
+        } catch (Exception e) {
+            throw new BeansException("Instantiate bean error: " + e);
+        }
+
+        addSingleton(beanName, bean);
+        return bean;
+    }
+
+    protected Object createBeanInstance(BeanDefinition beanDefinition) {
+        return instantiationStrategy.instantiate(beanDefinition);
+    }
+
+    protected Object initializeBean(String beanName, Object bean, BeanDefinition bd) {
+        Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+        invokeInitMethods(beanName, wrappedBean, bd);
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+        return wrappedBean;
     }
 
     protected void applyPropertyValues(String beanName, Object existBean, BeanDefinition beanDefinition) {
@@ -70,6 +89,36 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new BeansException("Failed to set value for field '" + fieldName + "' in class " + beanClass.getName(), e);
         }
+    }
+
+    protected void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) {
+        // TODO: invoke `init-method`
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessBeforeInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessAfterInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
     }
 
 }
