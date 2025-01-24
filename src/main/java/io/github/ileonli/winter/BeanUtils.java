@@ -1,7 +1,9 @@
 package io.github.ileonli.winter;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
 
@@ -51,6 +53,19 @@ public class BeanUtils {
 
     public static String fieldNameToSetMethodName(String fieldName) {
         return "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    }
+
+    public static void injectFieldValue(Class<?> clazz, Object target, String fieldName, Object value)
+            throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Field field = clazz.getDeclaredField(fieldName);
+        Class<?> fieldType = field.getType();
+
+        String setMethodName = BeanUtils.fieldNameToSetMethodName(fieldName);
+        Method setMethod = clazz.getDeclaredMethod(setMethodName, fieldType);
+
+        ReflectionUtils.makeAccessible(setMethod);
+
+        setMethod.invoke(target, value);
     }
 
 }

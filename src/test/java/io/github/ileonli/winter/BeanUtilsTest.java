@@ -3,6 +3,7 @@ package io.github.ileonli.winter;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -121,6 +122,17 @@ public class BeanUtilsTest {
         assertEquals("setA", BeanUtils.fieldNameToSetMethodName("a"));
         assertEquals("setAa", BeanUtils.fieldNameToSetMethodName("aa"));
         assertEquals("setSet", BeanUtils.fieldNameToSetMethodName("set"));
+    }
+
+    @Test
+    void injectFieldValue() throws NoSuchFieldException, InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+        Class<TestClass> clazz = TestClass.class;
+        TestClass testClass = new TestClass();
+        BeanUtils.injectFieldValue(clazz, testClass, "a", 10);
+        BeanUtils.injectFieldValue(clazz, testClass, "b", "test");
+
+        assertEquals(10, testClass.getA());
+        assertEquals("test", testClass.getB());
     }
 
 }
