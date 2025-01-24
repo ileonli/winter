@@ -49,4 +49,8 @@ public class BeanUtils {
         }
     }
 
+    public static String fieldNameToSetMethodName(String fieldName) {
+        return "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+    }
+
 }

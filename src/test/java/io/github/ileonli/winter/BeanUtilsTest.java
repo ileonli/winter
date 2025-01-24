@@ -116,6 +116,13 @@ public class BeanUtilsTest {
         assertEquals("test", c1.getB());
     }
 
+    @Test
+    void fieldNameToSetMethodName() {
+        assertEquals("setA", BeanUtils.fieldNameToSetMethodName("a"));
+        assertEquals("setAa", BeanUtils.fieldNameToSetMethodName("aa"));
+        assertEquals("setSet", BeanUtils.fieldNameToSetMethodName("set"));
+    }
+
 }
 
 
