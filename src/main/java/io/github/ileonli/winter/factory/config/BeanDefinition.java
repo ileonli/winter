@@ -1,8 +1,14 @@
 package io.github.ileonli.winter.factory.config;
 
+import io.github.ileonli.winter.PropertyValues;
+
+import java.util.Objects;
+
 public class BeanDefinition {
 
     private Class<?> beanClass;
+
+    private PropertyValues propertyValues;
 
     public BeanDefinition() {
     }
@@ -11,12 +17,37 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
+    public BeanDefinition(Class<?> beanClass, PropertyValues propertyValues) {
+        this.beanClass = beanClass;
+        this.propertyValues = propertyValues;
+    }
+
     public Class<?> getBeanClass() {
         return beanClass;
     }
 
     public void setBeanClass(Class<?> beanClass) {
         this.beanClass = beanClass;
+    }
+
+    public PropertyValues getPropertyValues() {
+        return propertyValues;
+    }
+
+    public void setPropertyValues(PropertyValues propertyValues) {
+        this.propertyValues = propertyValues;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BeanDefinition that = (BeanDefinition) o;
+        return Objects.equals(beanClass, that.beanClass) && Objects.equals(propertyValues, that.propertyValues);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beanClass, propertyValues);
     }
 
     @Override
