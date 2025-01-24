@@ -71,4 +71,14 @@ class PropertyValuesTest {
             propertyValues.addPropertyValue(null);
         });
     }
+
+    @Test
+    void testIsEmpty() {
+        PropertyValues propertyValues = new PropertyValues();
+        assertTrue(propertyValues.isEmpty());
+
+        propertyValues.addPropertyValue(new PropertyValue("name", "John Doe"));
+        assertFalse(propertyValues.isEmpty());
+    }
+
 }

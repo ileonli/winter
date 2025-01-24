@@ -39,4 +39,8 @@ public class PropertyValues {
         return pvs.toArray(new PropertyValue[0]);
     }
 
+    public boolean isEmpty() {
+        return pvs.isEmpty();
+    }
+
 }
