@@ -5,6 +5,6 @@ import io.github.ileonli.winter.factory.config.BeanDefinition;
 
 public interface InstantiationStrategy {
 
-    Object instantiate(BeanDefinition beanDefinition, String beanName, Object[] args) throws BeansException;
+    Object instantiate(BeanDefinition beanDefinition) throws BeansException;
 
 }
