@@ -1,7 +1,7 @@
 package io.github.ileonli.winter.beans.factory.support;
 
+import cn.hutool.core.util.ReflectUtil;
 import io.github.ileonli.winter.beans.BeansException;
-import io.github.ileonli.winter.beans.ReflectionUtils;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 
 import java.lang.reflect.Constructor;
@@ -14,7 +14,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
         Class<?> beanClass = beanDefinition.getBeanClass();
         try {
             Constructor<?> ctor = beanClass.getDeclaredConstructor();
-            ReflectionUtils.makeAccessible(ctor);
+            ReflectUtil.setAccessible(ctor);
             return ctor.newInstance();
         } catch (NoSuchMethodException e) {
             throw new BeansException(beanClass.getName() + " has no default constructor: " + e);

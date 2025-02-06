@@ -54,6 +54,7 @@ public class BeanDefinition {
     public String toString() {
         return "BeanDefinition{" +
                 "beanClass=" + beanClass +
+                ", propertyValues=" + propertyValues +
                 '}';
     }
 

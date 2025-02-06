@@ -1,14 +1,13 @@
 package io.github.ileonli.winter.beans.factory.support;
 
-import io.github.ileonli.winter.beans.BeanUtils;
+import cn.hutool.core.bean.BeanUtil;
 import io.github.ileonli.winter.beans.BeansException;
 import io.github.ileonli.winter.beans.PropertyValue;
 import io.github.ileonli.winter.beans.PropertyValues;
+import io.github.ileonli.winter.beans.factory.config.AutowireCapableBeanFactory;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 import io.github.ileonli.winter.beans.factory.config.BeanPostProcessor;
 import io.github.ileonli.winter.beans.factory.config.BeanReference;
-
-import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
@@ -58,17 +57,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             return;
         }
 
-        Class<?> beanClass = beanDefinition.getBeanClass();
         for (PropertyValue pv : pvs.getPropertyValues()) {
             try {
-                applyPropertyValue(existBean, beanClass, pv);
+                applyPropertyValue(existBean, pv);
             } catch (BeansException e) {
                 throw new BeansException("Failed to apply property '" + pv.getName() + "' to bean '" + beanName + "'", e);
             }
         }
     }
 
-    private void applyPropertyValue(Object bean, Class<?> beanClass, PropertyValue pv) {
+    private void applyPropertyValue(Object bean, PropertyValue pv) {
         String fieldName = pv.getName();
         Object value = pv.getValue();
 
@@ -76,19 +74,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeansException("Property value for field '" + fieldName + "' is null");
         }
 
-        if (value instanceof BeanReference br) {
-            value = getBean(br.getBeanName());
+        if (value instanceof BeanReference(String beanName)) {
+            value = getBean(beanName);
         }
 
-        try {
-            BeanUtils.injectFieldValue(beanClass, bean, fieldName, value);
-        } catch (NoSuchFieldException e) {
-            throw new BeansException("No such field '" + fieldName + "' in class " + beanClass.getName(), e);
-        } catch (NoSuchMethodException e) {
-            throw new BeansException("No such setter method for field '" + fieldName + "' in class " + beanClass.getName(), e);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new BeansException("Failed to set value for field '" + fieldName + "' in class " + beanClass.getName(), e);
-        }
+        BeanUtil.setFieldValue(bean, fieldName, value);
     }
 
     protected void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) {

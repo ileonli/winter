@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	         http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="testClass1" class="io.github.ileonli.winter.testclass.TestClass1">
+        <property name="a" value="10"/>
+        <property name="s" value="string"/>
+        <property name="tc2" ref="testClass2"/>
+    </bean>
+
+    <bean name="testClass2" class="io.github.ileonli.winter.testclass.TestClass2"/>
+
+</beans>

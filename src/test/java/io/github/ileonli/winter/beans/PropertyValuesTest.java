@@ -1,6 +1,7 @@
 package io.github.ileonli.winter.beans;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PropertyValuesTest {
@@ -66,10 +67,7 @@ class PropertyValuesTest {
     @Test
     void testAddPropertyValueWithNull() {
         PropertyValues propertyValues = new PropertyValues();
-
-        assertThrows(NullPointerException.class, () -> {
-            propertyValues.addPropertyValue(null);
-        });
+        assertThrows(NullPointerException.class, () -> propertyValues.addPropertyValue(null));
     }
 
     @Test
