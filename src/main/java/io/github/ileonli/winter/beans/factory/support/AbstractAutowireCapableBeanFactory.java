@@ -1,13 +1,19 @@
 package io.github.ileonli.winter.beans.factory.support;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
 import io.github.ileonli.winter.beans.BeansException;
 import io.github.ileonli.winter.beans.PropertyValue;
 import io.github.ileonli.winter.beans.PropertyValues;
+import io.github.ileonli.winter.beans.factory.DisposableBean;
+import io.github.ileonli.winter.beans.factory.InitializingBean;
 import io.github.ileonli.winter.beans.factory.config.AutowireCapableBeanFactory;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 import io.github.ileonli.winter.beans.factory.config.BeanPostProcessor;
 import io.github.ileonli.winter.beans.factory.config.BeanReference;
+
+import java.lang.reflect.Method;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
@@ -32,8 +38,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeansException("Instantiate bean error: " + e);
         }
 
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
+
         addSingleton(beanName, bean);
         return bean;
+    }
+
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
     }
 
     protected Object createBeanInstance(BeanDefinition beanDefinition) {
@@ -42,7 +56,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     protected Object initializeBean(String beanName, Object bean, BeanDefinition bd) {
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
-        invokeInitMethods(beanName, wrappedBean, bd);
+        try {
+            invokeInitMethods(beanName, wrappedBean, bd);
+        } catch (Throwable ex) {
+            throw new BeansException("Invocation of init method of bean[" + beanName + "] failed", ex);
+        }
         wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
         return wrappedBean;
     }
@@ -81,8 +99,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         BeanUtil.setFieldValue(bean, fieldName, value);
     }
 
-    protected void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) {
-        // TODO: invoke `init-method`
+    protected void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
+        if (bean instanceof InitializingBean ib) {
+            ib.afterPropertiesSet();
+        }
+
+        String initMethodName = beanDefinition.getInitMethodName();
+        if (StrUtil.isEmpty(initMethodName)) {
+            return;
+        }
+
+        Method initMethod = ClassUtil.getPublicMethod(beanDefinition.getBeanClass(), initMethodName);
+        if (initMethod == null) {
+            throw new BeansException("Could not find an init method named '" + initMethodName + "' on bean with name '" + beanName + "'");
+        }
+
+        initMethod.invoke(bean);
     }
 
     @Override

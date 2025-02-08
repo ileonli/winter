@@ -1,6 +1,8 @@
 package io.github.ileonli.winter.testclass;
 
-public class TestClass1 {
+import io.github.ileonli.winter.beans.factory.InitializingBean;
+
+public class TestClass1 implements InitializingBean {
 
     private int a;
     private String s;
@@ -37,6 +39,19 @@ public class TestClass1 {
 
     public void setTc2(TestClass2 tc2) {
         this.tc2 = tc2;
+    }
+
+    public void initMethod() {
+        this.a += 1;
+    }
+
+    public void destroyMethod() {
+        this.a += 1;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.a = 10;
     }
 
 }

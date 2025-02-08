@@ -27,6 +27,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public static final String CLASS_ATTRIBUTE = "class";
     public static final String VALUE_ATTRIBUTE = "value";
     public static final String REF_ATTRIBUTE = "ref";
+    public static final String INIT_METHOD_ATTRIBUTE = "init-method";
+    public static final String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
 
     private final ObjectMapper objectMapper = new XmlMapper();
 
@@ -76,6 +78,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         String id = node.path(ID_ATTRIBUTE).asText(null);
         String name = node.path(NAME_ATTRIBUTE).asText(null);
         String classPath = node.path(CLASS_ATTRIBUTE).asText(null);
+        String propertyInitMethod = node.path(INIT_METHOD_ATTRIBUTE).asText(null);
+        String propertyDestroyMethod = node.path(DESTROY_METHOD_ATTRIBUTE).asText(null);
 
         Class<?> clazz;
         try {
@@ -97,6 +101,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         }
 
         BeanDefinition bd = new BeanDefinition(clazz);
+        bd.setInitMethodName(propertyInitMethod);
+        bd.setDestroyMethodName(propertyDestroyMethod);
 
         node.withArray(PROPERTY_ELEMENT).forEach(property -> {
             String propertyName = property.path(NAME_ATTRIBUTE).asText(null);
@@ -111,8 +117,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             if (!StrUtil.isEmpty(propertyRef)) {
                 value = new BeanReference(propertyRef);
             }
-            PropertyValue pv = new PropertyValue(propertyName, value);
-            bd.getPropertyValues().addPropertyValue(pv);
+
+            bd.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, value));
         });
 
         registry.registerBeanDefinition(beanName, bd);
