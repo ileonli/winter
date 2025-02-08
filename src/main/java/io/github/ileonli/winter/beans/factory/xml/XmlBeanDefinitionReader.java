@@ -29,6 +29,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public static final String REF_ATTRIBUTE = "ref";
     public static final String INIT_METHOD_ATTRIBUTE = "init-method";
     public static final String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
+    public static final String SCOPE_ATTRIBUTE = "scope";
 
     private final ObjectMapper objectMapper = new XmlMapper();
 
@@ -78,8 +79,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         String id = node.path(ID_ATTRIBUTE).asText(null);
         String name = node.path(NAME_ATTRIBUTE).asText(null);
         String classPath = node.path(CLASS_ATTRIBUTE).asText(null);
-        String propertyInitMethod = node.path(INIT_METHOD_ATTRIBUTE).asText(null);
-        String propertyDestroyMethod = node.path(DESTROY_METHOD_ATTRIBUTE).asText(null);
+        String initMethod = node.path(INIT_METHOD_ATTRIBUTE).asText(null);
+        String destroyMethod = node.path(DESTROY_METHOD_ATTRIBUTE).asText(null);
+        String scope = node.path(SCOPE_ATTRIBUTE).asText(null);
 
         Class<?> clazz;
         try {
@@ -101,8 +103,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         }
 
         BeanDefinition bd = new BeanDefinition(clazz);
-        bd.setInitMethodName(propertyInitMethod);
-        bd.setDestroyMethodName(propertyDestroyMethod);
+        bd.setInitMethodName(initMethod);
+        bd.setDestroyMethodName(destroyMethod);
+        if (StrUtil.isNotEmpty(scope)) {
+            bd.setScope(scope);
+        }
 
         node.withArray(PROPERTY_ELEMENT).forEach(property -> {
             String propertyName = property.path(NAME_ATTRIBUTE).asText(null);
