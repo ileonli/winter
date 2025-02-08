@@ -16,6 +16,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         refreshBeanFactory();
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
+        prepareBeanFactory(beanFactory);
+
         invokeBeanFactoryPostProcessors(beanFactory);
 
         registerBeanPostProcessors(beanFactory);
@@ -24,6 +26,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     protected abstract void refreshBeanFactory() throws BeansException;
+
+    protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+    }
 
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
         Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);

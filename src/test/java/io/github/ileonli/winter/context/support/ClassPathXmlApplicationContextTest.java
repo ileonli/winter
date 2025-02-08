@@ -1,5 +1,9 @@
 package io.github.ileonli.winter.context.support;
 
+import io.github.ileonli.winter.beans.factory.BeanFactory;
+import io.github.ileonli.winter.beans.factory.support.DefaultListableBeanFactory;
+import io.github.ileonli.winter.testclass.ApplicationContextAwareTestClass;
+import io.github.ileonli.winter.testclass.BeanFactoryAwareTestClass;
 import io.github.ileonli.winter.testclass.TestClass1;
 import io.github.ileonli.winter.testclass.TestClass2;
 import org.junit.jupiter.api.Test;
@@ -41,6 +45,21 @@ public class ClassPathXmlApplicationContextTest {
 
         context.close();
         assertEquals(11, testClass1.getA()); // TestClass1.destroyMethod -> a + 1
+    }
+
+    @Test
+    public void beanFactoryAware() {
+        ClassPathXmlApplicationContext context =
+                new ClassPathXmlApplicationContext("classpath:BeanFactoryAwareTest.xml");
+        BeanFactoryAwareTestClass testClass = (BeanFactoryAwareTestClass) context.getBean("testClass");
+        assertEquals(testClass.getBeanFactory(), context.getBeanFactory());
+    }
+    @Test
+    public void applicationContextAware() {
+        ClassPathXmlApplicationContext context =
+                new ClassPathXmlApplicationContext("classpath:ApplicationContextAwareTest.xml");
+        ApplicationContextAwareTestClass testClass = (ApplicationContextAwareTestClass) context.getBean("testClass");
+        assertEquals(testClass.getApplicationContext(), context);
     }
 
 }

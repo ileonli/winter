@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import io.github.ileonli.winter.beans.BeansException;
 import io.github.ileonli.winter.beans.PropertyValue;
 import io.github.ileonli.winter.beans.PropertyValues;
+import io.github.ileonli.winter.beans.factory.BeanFactoryAware;
 import io.github.ileonli.winter.beans.factory.DisposableBean;
 import io.github.ileonli.winter.beans.factory.InitializingBean;
 import io.github.ileonli.winter.beans.factory.config.AutowireCapableBeanFactory;
@@ -55,6 +56,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected Object initializeBean(String beanName, Object bean, BeanDefinition bd) {
+        if (bean instanceof BeanFactoryAware bfa) {
+            bfa.setBeanFactory(this);
+        }
+
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
         try {
             invokeInitMethods(beanName, wrappedBean, bd);
