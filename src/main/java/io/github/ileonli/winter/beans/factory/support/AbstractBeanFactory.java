@@ -1,16 +1,21 @@
 package io.github.ileonli.winter.beans.factory.support;
 
 import io.github.ileonli.winter.beans.BeansException;
+import io.github.ileonli.winter.beans.factory.FactoryBean;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 import io.github.ileonli.winter.beans.factory.config.BeanPostProcessor;
 import io.github.ileonli.winter.beans.factory.config.ConfigurableBeanFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+    private final Map<String, Object> factoryBeanObjectCache = new HashMap<>();
 
     @Override
     public Object getBean(String name) throws BeansException {
@@ -18,13 +23,35 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     protected Object doGetBean(String name) throws BeansException {
-        Object bean = getSingleton(name);
-        if (bean != null) {
-            return bean;
+        Object sharedInstance = getSingleton(name);
+        if (sharedInstance != null) {
+            return getObjectForBeanInstance(sharedInstance, name);
         }
 
         BeanDefinition bd = getBeanDefinition(name);
-        return createBean(name, bd);
+        Object bean = createBean(name, bd);
+        return getObjectForBeanInstance(bean, name);
+    }
+
+    protected Object getObjectForBeanInstance(Object beanInstance, String beanName) {
+        Object object = beanInstance;
+        try {
+            if (object instanceof FactoryBean<?> fb) {
+                if (fb.isSingleton()) {
+                    object = factoryBeanObjectCache.get(beanName);
+                    if (object == null) {
+                        object = fb.getObject();
+                        factoryBeanObjectCache.put(beanName, object);
+                    }
+                } else {
+                    object = fb.getObject();
+                }
+            }
+        } catch (Exception e) {
+            throw new BeansException("FactoryBean threw exception on object[" + beanName + "] creation", e);
+        }
+
+        return object;
     }
 
     @Override

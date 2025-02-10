@@ -1,9 +1,6 @@
 package io.github.ileonli.winter.context.support;
 
-import io.github.ileonli.winter.testclass.ApplicationContextAwareTestClass;
-import io.github.ileonli.winter.testclass.BeanFactoryAwareTestClass;
-import io.github.ileonli.winter.testclass.TestClass1;
-import io.github.ileonli.winter.testclass.TestClass2;
+import io.github.ileonli.winter.testclass.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,6 +70,23 @@ public class ClassPathXmlApplicationContextTest {
         Object t3 = context.getBean("testClass2");
         Object t4 = context.getBean("testClass2");
         assertNotEquals(t3, t4);
+    }
+
+    @Test
+    public void factoryBean() {
+        ClassPathXmlApplicationContext context =
+                new ClassPathXmlApplicationContext("classpath:FactoryBeanTest.xml");
+        Object t1 = context.getBean("singleton");
+        Object t2 = context.getBean("singleton");
+        assertEquals(t1, t2);
+        assertEquals("singleton", ((FactoryBeanSingletonTest) t1).getS());
+        assertEquals("singleton", ((FactoryBeanSingletonTest) t2).getS());
+
+        Object t3 = context.getBean("prototype");
+        Object t4 = context.getBean("prototype");
+        assertNotEquals(t3, t4);
+        assertEquals("prototype", ((FactoryBeanPrototypeTest) t3).getS());
+        assertEquals("prototype", ((FactoryBeanPrototypeTest) t4).getS());
     }
 
 }
