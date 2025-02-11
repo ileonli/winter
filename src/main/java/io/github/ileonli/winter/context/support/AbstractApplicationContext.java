@@ -8,6 +8,7 @@ import io.github.ileonli.winter.context.ApplicationEvent;
 import io.github.ileonli.winter.context.ApplicationListener;
 import io.github.ileonli.winter.context.ConfigurableApplicationContext;
 import io.github.ileonli.winter.context.event.ApplicationEventMulticaster;
+import io.github.ileonli.winter.context.event.ContextClosedEvent;
 import io.github.ileonli.winter.context.event.ContextRefreshedEvent;
 import io.github.ileonli.winter.context.event.SimpleApplicationEventMulticaster;
 import io.github.ileonli.winter.core.io.DefaultResourceLoader;
@@ -111,6 +112,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     }
 
     protected void doClose() {
+        publishEvent(new ContextClosedEvent(this));
+
         destroyBeans();
     }
 
