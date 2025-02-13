@@ -10,6 +10,8 @@ public class AdvisedSupport {
 
     private MethodMatcher methodMatcher;
 
+    private boolean proxyTargetClass = false;
+
     public AdvisedSupport() {
     }
 
@@ -41,6 +43,14 @@ public class AdvisedSupport {
 
     public void setMethodMatcher(MethodMatcher methodMatcher) {
         this.methodMatcher = methodMatcher;
+    }
+
+    public boolean isProxyTargetClass() {
+        return proxyTargetClass;
+    }
+
+    public void setProxyTargetClass(boolean proxyTargetClass) {
+        this.proxyTargetClass = proxyTargetClass;
     }
 
 }
