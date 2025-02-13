@@ -63,7 +63,7 @@
         <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
-            <version>1.0</version>
+            <version>${aopalliance.version}</version>
         </dependency>
     </dependencies>
 
