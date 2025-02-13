@@ -21,6 +21,7 @@
         <woodstox.version>6.5.0</woodstox.version>
         <aspectjweaver.version>1.9.22.1</aspectjweaver.version>
         <aopalliance.version>1.0</aopalliance.version>
+        <springcore.version>6.2.2</springcore.version>
     </properties>
 
     <dependencies>
@@ -64,6 +65,11 @@
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
             <version>${aopalliance.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${springcore.version}</version>
         </dependency>
     </dependencies>
 
