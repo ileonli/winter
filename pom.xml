@@ -20,6 +20,7 @@
         <jackson.version>2.18.1</jackson.version>
         <woodstox.version>6.5.0</woodstox.version>
         <aspectjweaver.version>1.9.22.1</aspectjweaver.version>
+        <aopalliance.version>1.0</aopalliance.version>
     </properties>
 
     <dependencies>
@@ -58,6 +59,11 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectjweaver.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 
