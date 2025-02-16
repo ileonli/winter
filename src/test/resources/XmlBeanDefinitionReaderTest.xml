@@ -6,5 +6,10 @@
 
     <bean name="testClass1" class="io.github.ileonli.winter.testclass.TestClass1"/>
     <bean name="testClass2" class="io.github.ileonli.winter.testclass.TestClass2"/>
+    <bean name="testClass3" class="io.github.ileonli.winter.testclass.TestClass1">
+        <property name="a" value="10"/>
+        <property name="s" value="test"/>
+        <property name="tc2" ref="testClass2"/>
+    </bean>
 
 </beans>
