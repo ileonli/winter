@@ -1,6 +1,6 @@
 package io.github.ileonli.winter.beans.factory.support;
 
-import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.DynaBean;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import io.github.ileonli.winter.beans.BeansException;
@@ -9,24 +9,41 @@ import io.github.ileonli.winter.beans.PropertyValues;
 import io.github.ileonli.winter.beans.factory.BeanFactoryAware;
 import io.github.ileonli.winter.beans.factory.DisposableBean;
 import io.github.ileonli.winter.beans.factory.InitializingBean;
-import io.github.ileonli.winter.beans.factory.config.AutowireCapableBeanFactory;
-import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
-import io.github.ileonli.winter.beans.factory.config.BeanPostProcessor;
-import io.github.ileonli.winter.beans.factory.config.BeanReference;
+import io.github.ileonli.winter.beans.factory.config.*;
 
 import java.lang.reflect.Method;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
-    private final InstantiationStrategy instantiationStrategy;
-
-    public AbstractAutowireCapableBeanFactory() {
-        this.instantiationStrategy = new SimpleInstantiationStrategy();
-    }
+    private InstantiationStrategy instantiationStrategy = new SimpleInstantiationStrategy();
 
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition) throws BeansException {
+        Object bean = resolveBeforeInstantiation(beanName, beanDefinition);
+        if (bean != null) {
+            return bean;
+        }
         return doCreateBean(beanName, beanDefinition);
+    }
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        if (bean != null) {
+            bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+        }
+        return bean;
+    }
+
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor processor) {
+                Object result = processor.postProcessBeforeInstantiation(beanClass, beanName);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 
     protected Object doCreateBean(String beanName, BeanDefinition beanDefinition) throws BeansException {
@@ -106,7 +123,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             value = getBean(beanName);
         }
 
-        BeanUtil.setFieldValue(bean, fieldName, value);
+        DynaBean dynaBean = DynaBean.create(bean);
+        dynaBean.set(fieldName, value);
     }
 
     protected void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
@@ -151,6 +169,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             result = current;
         }
         return result;
+    }
+
+    public InstantiationStrategy getInstantiationStrategy() {
+        return instantiationStrategy;
+    }
+
+    public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
+        this.instantiationStrategy = instantiationStrategy;
     }
 
 }

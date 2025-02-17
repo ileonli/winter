@@ -15,10 +15,16 @@ public class ProxyFactory {
     }
 
     private AopProxy createAopProxy() {
-        if (advisedSupport.isProxyTargetClass()) {
+        Object target = advisedSupport.getTargetSource().getTarget();
+        if (advisedSupport.isProxyTargetClass() ||
+                !hasInterface(target.getClass())) {
             return new CglibAopProxy(advisedSupport);
         }
         return new JdkDynamicAopProxy(advisedSupport);
+    }
+
+    private boolean hasInterface(Class<?> targetClass) {
+        return targetClass.getInterfaces().length > 0;
     }
 
 }
