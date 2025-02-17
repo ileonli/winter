@@ -10,6 +10,7 @@ import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 import io.github.ileonli.winter.beans.factory.config.BeanReference;
 import io.github.ileonli.winter.beans.factory.support.AbstractBeanDefinitionReader;
 import io.github.ileonli.winter.beans.factory.support.BeanDefinitionRegistry;
+import io.github.ileonli.winter.context.annotation.ClassPathBeanDefinitionScanner;
 import io.github.ileonli.winter.core.io.Resource;
 import io.github.ileonli.winter.core.io.ResourceLoader;
 
@@ -30,6 +31,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public static final String INIT_METHOD_ATTRIBUTE = "init-method";
     public static final String DESTROY_METHOD_ATTRIBUTE = "destroy-method";
     public static final String SCOPE_ATTRIBUTE = "scope";
+    public static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
+    public static final String COMPONENT_SCAN_ELEMENT = "component-scan";
 
     private final ObjectMapper objectMapper = new XmlMapper();
 
@@ -60,6 +63,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     protected void doLoadBeanDefinitions(InputStream inputStream) {
         try {
             JsonNode tree = objectMapper.readTree(inputStream);
+
+            JsonNode componentScan = tree.path(COMPONENT_SCAN_ELEMENT);
+            if (!componentScan.isMissingNode()) {
+                String scanPath = componentScan.path(BASE_PACKAGE_ATTRIBUTE).asText(null);
+                if (StrUtil.isEmpty(scanPath)) {
+                    throw new BeansException("The value of base-package attribute can not be empty or null");
+                }
+                scanPackage(scanPath);
+            }
+
             JsonNode beans = tree.path(BEAN_ELEMENT);
             if (beans.isMissingNode()) {
                 return;
@@ -136,6 +149,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         }
 
         bd.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, value));
+    }
+
+
+    private void scanPackage(String scanPath) {
+        String[] basePackages = StrUtil.splitToArray(scanPath, ',');
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getRegistry());
+        scanner.doScan(basePackages);
     }
 
 }
