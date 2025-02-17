@@ -109,26 +109,33 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             bd.setScope(scope);
         }
 
-        if (node.has(PROPERTY_ELEMENT) && node.path(PROPERTY_ELEMENT).isArray()) {
-            node.withArray(PROPERTY_ELEMENT).forEach(property -> {
-                String propertyName = property.path(NAME_ATTRIBUTE).asText(null);
-                String propertyValue = property.path(VALUE_ATTRIBUTE).asText(null);
-                String propertyRef = property.path(REF_ATTRIBUTE).asText(null);
-
-                if (StrUtil.isEmpty(propertyName)) {
-                    throw new BeansException("The name attribute cannot be null or empty");
-                }
-
-                Object value = propertyValue;
-                if (!StrUtil.isEmpty(propertyRef)) {
-                    value = new BeanReference(propertyRef);
-                }
-
-                bd.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, value));
-            });
+        JsonNode propertyElement = node.path(PROPERTY_ELEMENT);
+        if (!propertyElement.isMissingNode()) {
+            if (propertyElement.isArray()) {
+                propertyElement.forEach((property) -> parsePropertyNode(bd, property));
+            } else {
+                parsePropertyNode(bd, propertyElement);
+            }
         }
 
         registry.registerBeanDefinition(beanName, bd);
+    }
+
+    private void parsePropertyNode(BeanDefinition bd, JsonNode property) {
+        String propertyName = property.path(NAME_ATTRIBUTE).asText(null);
+        String propertyValue = property.path(VALUE_ATTRIBUTE).asText(null);
+        String propertyRef = property.path(REF_ATTRIBUTE).asText(null);
+
+        if (StrUtil.isEmpty(propertyName)) {
+            throw new BeansException("The name attribute cannot be null or empty");
+        }
+
+        Object value = propertyValue;
+        if (!StrUtil.isEmpty(propertyRef)) {
+            value = new BeanReference(propertyRef);
+        }
+
+        bd.getPropertyValues().addPropertyValue(new PropertyValue(propertyName, value));
     }
 
 }
