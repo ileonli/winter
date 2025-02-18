@@ -13,12 +13,12 @@ public class EventPublishTest {
     @Test
     public void publish() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:EventPublishTest.xml");
+                new ClassPathXmlApplicationContext("classpath:context/support/event/EventPublishTest.xml");
 
         ArrayList<Integer> list = new ArrayList<>();
         context.publishEvent(new TestEvent(list));
 
-        // io.github.ileonli.winter.testclass.EventListener.onApplicationEvent will add 1
+        // io.github.ileonli.winter.testclass.support.event.EventListener.onApplicationEvent will add 1
         assertEquals(1, list.size());
         assertEquals(1, list.getFirst());
     }

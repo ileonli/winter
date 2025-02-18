@@ -1,26 +1,27 @@
 package io.github.ileonli.winter.aop.framework.autoproxy;
 
 import io.github.ileonli.winter.context.support.ClassPathXmlApplicationContext;
-import io.github.ileonli.winter.testclass.CustomService;
-import io.github.ileonli.winter.testclass.CustomServiceBeforeAdvice;
+import io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClass1;
+import io.github.ileonli.winter.testclass.aop.framework.autoproxy.AopProxyTestClass1BeforeAdvice;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultAdvisorAutoProxyCreatorTest {
 
     @Test
     public void beanFactoryAutoProxyCreator() throws NoSuchMethodException {
-        ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:DefaultAdvisorAutoProxyCreatorTest.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                "classpath:aop/freamework/autoproxy/DefaultAdvisorAutoProxyCreatorTest.xml");
 
-        CustomService service = (CustomService) context.getBean("customServiceImp");
+        AopProxyTestClass1 service = (AopProxyTestClass1) context.getBean("aopProxyTestClassImp1");
         assertTrue(service.getClass().getSimpleName().contains("$Proxy"));
 
-        service.f();
+        service.f(0);
 
-        CustomServiceBeforeAdvice advice = (CustomServiceBeforeAdvice) context.getBean("beforeAdvice");
-        assertEquals(advice.invokeMethod.getName(), service.getClass().getDeclaredMethod("f").getName());
+        AopProxyTestClass1BeforeAdvice advice = (AopProxyTestClass1BeforeAdvice) context.getBean("beforeAdvice");
+        assertEquals(advice.invokeMethod.getName(), service.getClass().getDeclaredMethod("f", int.class).getName());
     }
 
 }

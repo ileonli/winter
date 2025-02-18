@@ -4,12 +4,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean class="io.github.ileonli.winter.testclass.CustomServiceImp"/>
+    <bean class="io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClassImp1"/>
 
     <bean class="io.github.ileonli.winter.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
     <bean id="pointcutAdvisor" class="io.github.ileonli.winter.aop.aspectj.AspectJExpressionPointcutAdvisor">
-        <property name="expression" value="execution(* io.github.ileonli.winter.testclass.CustomService.*(..))"/>
+        <property name="expression"
+                  value="execution(* io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClass1.*(..))"/>
         <property name="advice" ref="methodInterceptor"/>
     </bean>
 
@@ -17,6 +18,7 @@
         <property name="advice" ref="beforeAdvice"/>
     </bean>
 
-    <bean id="beforeAdvice" class="io.github.ileonli.winter.testclass.CustomServiceBeforeAdvice"/>
+    <bean id="beforeAdvice"
+          class="io.github.ileonli.winter.testclass.aop.framework.autoproxy.AopProxyTestClass1BeforeAdvice"/>
 
 </beans>

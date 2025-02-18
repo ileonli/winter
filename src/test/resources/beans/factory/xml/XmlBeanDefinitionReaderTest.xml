@@ -4,14 +4,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="testClass1" class="io.github.ileonli.winter.testclass.TestClass1"/>
-    <bean id="testClass2" class="io.github.ileonli.winter.testclass.TestClass2"/>
-    <bean id="testClass3" class="io.github.ileonli.winter.testclass.TestClass1">
+    <bean id="testClass1" class="io.github.ileonli.winter.testclass.support.TestClass1"/>
+    <bean id="testClass2" class="io.github.ileonli.winter.testclass.support.TestClass2"/>
+    <bean id="testClass3" class="io.github.ileonli.winter.testclass.support.TestClass1">
         <property name="a" value="20"/>
         <property name="s" value="test"/>
         <property name="tc2" ref="testClass2"/>
     </bean>
-    <bean id="testClass4" class="io.github.ileonli.winter.testclass.TestClass1">
+    <bean id="testClass4" class="io.github.ileonli.winter.testclass.support.TestClass1">
         <property name="a" value="20"/>
     </bean>
 

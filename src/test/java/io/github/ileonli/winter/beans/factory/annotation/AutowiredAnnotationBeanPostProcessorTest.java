@@ -10,8 +10,8 @@ public class AutowiredAnnotationBeanPostProcessorTest {
 
     @Test
     public void valueAnnotation() {
-        ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:ValueAnnotationTest.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                "classpath:beans/factory/annotation/ValueAnnotationTest.xml");
 
         ValueAnnotationTestClass bean = (ValueAnnotationTestClass) context.getBean("valueAnnotationTestClass");
         assertEquals(10, bean.getA());

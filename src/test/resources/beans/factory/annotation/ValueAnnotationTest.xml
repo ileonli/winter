@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean class="io.github.ileonli.winter.beans.factory.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:ValueAnnotation.properties" />
+        <property name="location" value="classpath:beans/factory/annotation/ValueAnnotation.properties"/>
     </bean>
 
     <context:component-scan base-package="io.github.ileonli.winter.testclass"/>

@@ -17,7 +17,7 @@ public class XmlBeanDefinitionReaderTest {
     public void test() {
         DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(factory);
-        reader.loadBeanDefinitions(new ClassPathResource("XmlBeanDefinitionReaderTest.xml"));
+        reader.loadBeanDefinitions(new ClassPathResource("beans/factory/xml/XmlBeanDefinitionReaderTest.xml"));
 
         String[] beanDefinitionNames = factory.getBeanDefinitionNames();
         assertEquals(4, beanDefinitionNames.length);

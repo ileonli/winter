@@ -11,7 +11,7 @@ public class PropertyPlaceholderConfigurerTest {
     @Test
     public void propertyPlaceholder() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:PropertyPlaceholderConfigurerTest.xml");
+                new ClassPathXmlApplicationContext("classpath:beans/factory/PropertyPlaceholderConfigurerTest.xml");
 
         PropertyPlaceholderConfigurerTestClass bean =
                 (PropertyPlaceholderConfigurerTestClass) context.getBean("bean");

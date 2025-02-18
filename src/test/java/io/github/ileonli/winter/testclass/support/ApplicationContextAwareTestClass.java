@@ -1,8 +1,6 @@
-package io.github.ileonli.winter.testclass;
+package io.github.ileonli.winter.testclass.support;
 
 import io.github.ileonli.winter.beans.BeansException;
-import io.github.ileonli.winter.beans.factory.BeanFactory;
-import io.github.ileonli.winter.beans.factory.BeanFactoryAware;
 import io.github.ileonli.winter.context.ApplicationContext;
 import io.github.ileonli.winter.context.ApplicationContextAware;
 

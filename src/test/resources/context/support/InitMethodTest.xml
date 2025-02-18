@@ -4,6 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean name="testClass" class="io.github.ileonli.winter.testclass.ApplicationContextAwareTestClass"/>
+    <bean name="testClass1" class="io.github.ileonli.winter.testclass.support.TestClass1" init-method="initMethod"/>
 
 </beans>

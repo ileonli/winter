@@ -4,6 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean name="eventListener" class="io.github.ileonli.winter.testclass.EventListener"/>
+    <bean name="testClass" class="io.github.ileonli.winter.testclass.support.ApplicationContextAwareTestClass"/>
 
 </beans>

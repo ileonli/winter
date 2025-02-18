@@ -1,10 +1,10 @@
-package io.github.ileonli.winter.testclass;
+package io.github.ileonli.winter.testclass.aop.framework.autoproxy;
 
 import io.github.ileonli.winter.aop.MethodBeforeAdvice;
 
 import java.lang.reflect.Method;
 
-public class CustomServiceBeforeAdvice implements MethodBeforeAdvice {
+public class AopProxyTestClass1BeforeAdvice implements MethodBeforeAdvice {
 
     public Method invokeMethod;
 

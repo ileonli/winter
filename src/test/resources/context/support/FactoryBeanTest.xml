@@ -4,6 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean name="testClass1" class="io.github.ileonli.winter.testclass.TestClass1" destroy-method="destroyMethod"/>
+    <bean name="singleton" class="io.github.ileonli.winter.testclass.support.FactoryBeanSingletonTest"/>
+    <bean name="prototype" class="io.github.ileonli.winter.testclass.support.FactoryBeanPrototypeTest"/>
 
 </beans>

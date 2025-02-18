@@ -1,6 +1,6 @@
 package io.github.ileonli.winter.context.support;
 
-import io.github.ileonli.winter.testclass.*;
+import io.github.ileonli.winter.testclass.support.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,8 +10,8 @@ public class ClassPathXmlApplicationContextTest {
 
     @Test
     public void buildBeanFromXml() {
-        ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:ClassPathXmlApplicationContextTest.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                "classpath:context/support/ClassPathXmlApplicationContextTest.xml");
         String[] beanDefinitionNames = context.getBeanDefinitionNames();
 
         assertEquals(2, beanDefinitionNames.length);
@@ -27,7 +27,7 @@ public class ClassPathXmlApplicationContextTest {
     @Test
     public void initMethod() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:InitMethodTest.xml");
+                new ClassPathXmlApplicationContext("classpath:context/support/InitMethodTest.xml");
         TestClass1 testClass1 = (TestClass1) context.getBean("testClass1");
         assertEquals(11, testClass1.getA());
     }
@@ -35,7 +35,7 @@ public class ClassPathXmlApplicationContextTest {
     @Test
     public void destroyMethod() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:DestroyMethodTest.xml");
+                new ClassPathXmlApplicationContext("classpath:context/support/DestroyMethodTest.xml");
         TestClass1 testClass1 = (TestClass1) context.getBean("testClass1");
         assertEquals(10, testClass1.getA());
 
@@ -46,7 +46,7 @@ public class ClassPathXmlApplicationContextTest {
     @Test
     public void beanFactoryAware() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:BeanFactoryAwareTest.xml");
+                new ClassPathXmlApplicationContext("classpath:context/support/BeanFactoryAwareTest.xml");
         BeanFactoryAwareTestClass testClass = (BeanFactoryAwareTestClass) context.getBean("testClass");
         assertEquals(testClass.getBeanFactory(), context.getBeanFactory());
     }
@@ -54,7 +54,7 @@ public class ClassPathXmlApplicationContextTest {
     @Test
     public void applicationContextAware() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:ApplicationContextAwareTest.xml");
+                new ClassPathXmlApplicationContext("classpath:context/support/ApplicationContextAwareTest.xml");
         ApplicationContextAwareTestClass testClass = (ApplicationContextAwareTestClass) context.getBean("testClass");
         assertEquals(testClass.getApplicationContext(), context);
     }
@@ -62,7 +62,7 @@ public class ClassPathXmlApplicationContextTest {
     @Test
     public void prototypeBean() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:PrototypeBeanTest.xml");
+                new ClassPathXmlApplicationContext("classpath:context/support/PrototypeBeanTest.xml");
         Object t1 = context.getBean("testClass1");
         Object t2 = context.getBean("testClass1");
         assertEquals(t1, t2);
@@ -75,7 +75,7 @@ public class ClassPathXmlApplicationContextTest {
     @Test
     public void factoryBean() {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("classpath:FactoryBeanTest.xml");
+                new ClassPathXmlApplicationContext("classpath:context/support/FactoryBeanTest.xml");
         Object t1 = context.getBean("singleton");
         Object t2 = context.getBean("singleton");
         assertEquals(t1, t2);
