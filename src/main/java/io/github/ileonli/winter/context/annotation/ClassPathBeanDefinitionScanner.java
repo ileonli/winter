@@ -1,6 +1,7 @@
 package io.github.ileonli.winter.context.annotation;
 
 import cn.hutool.core.util.StrUtil;
+import io.github.ileonli.winter.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import io.github.ileonli.winter.beans.factory.config.BeanDefinition;
 import io.github.ileonli.winter.beans.factory.support.BeanDefinitionRegistry;
 import io.github.ileonli.winter.stereotype.Component;
@@ -9,6 +10,9 @@ import java.beans.Introspector;
 import java.util.Set;
 
 public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
+
+    public static final String AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME =
+            "io.github.ileonli.winter.beans.factory.annotation.internalAutowiredAnnotationProcessor";
 
     private final BeanDefinitionRegistry registry;
 
@@ -30,6 +34,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
                 registry.registerBeanDefinition(beanName, bd);
             }
         }
+
+        registry.registerBeanDefinition(AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME,
+                new BeanDefinition(AutowiredAnnotationBeanPostProcessor.class));
     }
 
     private String resolveBeanScope(BeanDefinition beanDefinition) {

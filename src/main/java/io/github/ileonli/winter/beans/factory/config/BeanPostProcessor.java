@@ -4,8 +4,12 @@ import io.github.ileonli.winter.beans.BeansException;
 
 public interface BeanPostProcessor {
 
-    Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;
+    default Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
 
-    Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException;
+    default Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
 
 }
