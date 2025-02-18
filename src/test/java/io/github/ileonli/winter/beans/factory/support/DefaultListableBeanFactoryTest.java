@@ -71,6 +71,12 @@ public class DefaultListableBeanFactoryTest {
 
         Object testClass2 = beanFactory.getBean("testClass");
         assertEquals(testClass1, testClass2);
+
+        Object testClass3 = beanFactory.getBean(TestClass.class);
+        assertNotNull(testClass3);
+
+        Object testClass4 = beanFactory.getBean("testClass", TestClass.class);
+        assertNotNull(testClass4);
     }
 
     @Test
