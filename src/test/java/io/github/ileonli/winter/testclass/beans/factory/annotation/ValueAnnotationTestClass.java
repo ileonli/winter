@@ -1,4 +1,4 @@
-package io.github.ileonli.winter.testclass;
+package io.github.ileonli.winter.testclass.beans.factory.annotation;
 
 import io.github.ileonli.winter.beans.factory.annotation.Value;
 import io.github.ileonli.winter.stereotype.Component;

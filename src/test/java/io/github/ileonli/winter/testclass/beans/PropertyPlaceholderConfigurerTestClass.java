@@ -1,4 +1,4 @@
-package io.github.ileonli.winter.testclass;
+package io.github.ileonli.winter.testclass.beans;
 
 public class PropertyPlaceholderConfigurerTestClass {
 

@@ -1,7 +1,7 @@
 package io.github.ileonli.winter.context.support.event;
 
 import io.github.ileonli.winter.context.support.ClassPathXmlApplicationContext;
-import io.github.ileonli.winter.testclass.TestEvent;
+import io.github.ileonli.winter.testclass.support.event.TestEvent;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

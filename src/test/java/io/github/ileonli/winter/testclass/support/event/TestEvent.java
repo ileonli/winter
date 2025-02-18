@@ -1,4 +1,4 @@
-package io.github.ileonli.winter.testclass;
+package io.github.ileonli.winter.testclass.support.event;
 
 import io.github.ileonli.winter.context.ApplicationEvent;
 

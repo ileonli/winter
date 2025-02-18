@@ -7,6 +7,6 @@
         <property name="location" value="classpath:beans/factory/annotation/ValueAnnotation.properties"/>
     </bean>
 
-    <context:component-scan base-package="io.github.ileonli.winter.testclass"/>
+    <context:component-scan base-package="io.github.ileonli.winter.testclass.beans.factory.annotation"/>
 
 </beans>

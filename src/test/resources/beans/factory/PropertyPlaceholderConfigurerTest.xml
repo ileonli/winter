@@ -7,7 +7,7 @@
         <property name="location" value="classpath:beans/factory/PropertyPlaceholderConfigurerTest.properties"/>
     </bean>
 
-    <bean name="bean" class="io.github.ileonli.winter.testclass.PropertyPlaceholderConfigurerTestClass">
+    <bean name="bean" class="io.github.ileonli.winter.testclass.beans.PropertyPlaceholderConfigurerTestClass">
         <property name="a" value="${a}"/>
         <property name="s" value="${s}"/>
     </bean>

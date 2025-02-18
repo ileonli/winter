@@ -1,7 +1,7 @@
 package io.github.ileonli.winter.beans.factory;
 
 import io.github.ileonli.winter.context.support.ClassPathXmlApplicationContext;
-import io.github.ileonli.winter.testclass.PropertyPlaceholderConfigurerTestClass;
+import io.github.ileonli.winter.testclass.beans.PropertyPlaceholderConfigurerTestClass;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

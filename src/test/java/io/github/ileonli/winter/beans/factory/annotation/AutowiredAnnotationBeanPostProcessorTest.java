@@ -1,7 +1,7 @@
 package io.github.ileonli.winter.beans.factory.annotation;
 
 import io.github.ileonli.winter.context.support.ClassPathXmlApplicationContext;
-import io.github.ileonli.winter.testclass.ValueAnnotationTestClass;
+import io.github.ileonli.winter.testclass.beans.factory.annotation.ValueAnnotationTestClass;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
