@@ -11,7 +11,6 @@ public class AopProxyTestClass1BeforeAdvice implements MethodBeforeAdvice {
     @Override
     public void before(Method method, Object[] args, Object target) throws Throwable {
         invokeMethod = method;
-        method.invoke(target, args);
     }
 
 }

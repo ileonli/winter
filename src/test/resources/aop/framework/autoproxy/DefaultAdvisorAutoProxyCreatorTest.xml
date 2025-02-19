@@ -4,7 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean class="io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClassImp1"/>
+    <bean class="io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClassImp1">
+        <property name="a" value="99"/>
+    </bean>
 
     <bean class="io.github.ileonli.winter.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 

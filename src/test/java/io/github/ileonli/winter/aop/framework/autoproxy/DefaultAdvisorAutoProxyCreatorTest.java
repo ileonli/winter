@@ -13,10 +13,11 @@ public class DefaultAdvisorAutoProxyCreatorTest {
     @Test
     public void beanFactoryAutoProxyCreator() throws NoSuchMethodException {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                "classpath:aop/freamework/autoproxy/DefaultAdvisorAutoProxyCreatorTest.xml");
+                "classpath:aop/framework/autoproxy/DefaultAdvisorAutoProxyCreatorTest.xml");
 
         AopProxyTestClass1 service = (AopProxyTestClass1) context.getBean("aopProxyTestClassImp1");
         assertTrue(service.getClass().getSimpleName().contains("$Proxy"));
+        assertEquals(99, service.getA());
 
         service.f(0);
 

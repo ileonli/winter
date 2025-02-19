@@ -4,4 +4,6 @@ public interface AopProxyTestClass1 {
 
     int f(int a);
 
+    int getA();
+
 }
