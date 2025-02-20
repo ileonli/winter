@@ -21,6 +21,8 @@ public class BeanDefinition {
 
     private String scope;
 
+    private boolean lazyInit;
+
     public BeanDefinition() {
         this(null);
     }
@@ -30,11 +32,11 @@ public class BeanDefinition {
     }
 
     public BeanDefinition(Class<?> beanClass, PropertyValues propertyValues) {
-        this(beanClass, propertyValues, null, null, SCOPE_SINGLETON);
+        this(beanClass, propertyValues, null, null, SCOPE_SINGLETON, false);
     }
 
     public BeanDefinition(Class<?> beanClass, PropertyValues propertyValues,
-                          String initMethodName, String destroyMethodName, String scope) {
+                          String initMethodName, String destroyMethodName, String scope, boolean isLazyInit) {
         this.beanClass = beanClass;
         this.propertyValues = Objects.requireNonNullElse(propertyValues, new PropertyValues());
         this.initMethodName = initMethodName;
@@ -44,6 +46,7 @@ public class BeanDefinition {
             throw new BeansException("Bean scope must be: " + SCOPE_SINGLETON + " or " + SCOPE_PROTOTYPE);
         }
         this.scope = scope;
+        this.lazyInit = isLazyInit;
     }
 
     public Class<?> getBeanClass() {
@@ -97,11 +100,20 @@ public class BeanDefinition {
         return SCOPE_PROTOTYPE.equals(scope);
     }
 
+    public boolean isLazyInit() {
+        return lazyInit;
+    }
+
+    public void setLazyInit(boolean lazyInit) {
+        this.lazyInit = lazyInit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BeanDefinition that = (BeanDefinition) o;
-        return Objects.equals(beanClass, that.beanClass) &&
+        return lazyInit == that.lazyInit &&
+                Objects.equals(beanClass, that.beanClass) &&
                 Objects.equals(propertyValues, that.propertyValues) &&
                 Objects.equals(initMethodName, that.initMethodName) &&
                 Objects.equals(destroyMethodName, that.destroyMethodName) &&
@@ -110,7 +122,7 @@ public class BeanDefinition {
 
     @Override
     public int hashCode() {
-        return Objects.hash(beanClass, propertyValues, initMethodName, destroyMethodName, scope);
+        return Objects.hash(beanClass, propertyValues, initMethodName, destroyMethodName, scope, lazyInit);
     }
 
     @Override
@@ -121,6 +133,7 @@ public class BeanDefinition {
                 ", initMethodName='" + initMethodName + '\'' +
                 ", destroyMethodName='" + destroyMethodName + '\'' +
                 ", scope='" + scope + '\'' +
+                ", lazyInit=" + lazyInit +
                 '}';
     }
 

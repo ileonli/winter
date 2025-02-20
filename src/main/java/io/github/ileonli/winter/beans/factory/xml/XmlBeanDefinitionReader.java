@@ -33,6 +33,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public static final String SCOPE_ATTRIBUTE = "scope";
     public static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
     public static final String COMPONENT_SCAN_ELEMENT = "component-scan";
+    public static final String LAZYINIT_ATTRIBUTE = "lazyInit";
 
     private final ObjectMapper objectMapper = new XmlMapper();
 
@@ -95,6 +96,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         String initMethod = node.path(INIT_METHOD_ATTRIBUTE).asText(null);
         String destroyMethod = node.path(DESTROY_METHOD_ATTRIBUTE).asText(null);
         String scope = node.path(SCOPE_ATTRIBUTE).asText(null);
+        String lazyInit = node.path(LAZYINIT_ATTRIBUTE).asText(null);
 
         Class<?> clazz;
         try {
@@ -116,10 +118,21 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         }
 
         BeanDefinition bd = new BeanDefinition(clazz);
-        bd.setInitMethodName(initMethod);
-        bd.setDestroyMethodName(destroyMethod);
-        if (StrUtil.isNotEmpty(scope)) {
-            bd.setScope(scope);
+        try {
+            if (StrUtil.isNotEmpty(initMethod)) {
+                bd.setInitMethodName(initMethod);
+            }
+            if (StrUtil.isNotEmpty(destroyMethod)) {
+                bd.setDestroyMethodName(destroyMethod);
+            }
+            if (StrUtil.isNotEmpty(scope)) {
+                bd.setScope(scope);
+            }
+            if (StrUtil.isNotEmpty(lazyInit)) {
+                bd.setLazyInit(Boolean.parseBoolean(lazyInit));
+            }
+        } catch (Exception e) {
+            throw new BeansException("Unexpected error while configuring bean [" + clazz.getName() + "]", e);
         }
 
         JsonNode propertyElement = node.path(PROPERTY_ELEMENT);
