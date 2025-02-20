@@ -52,6 +52,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         try {
             bean = createBeanInstance(beanDefinition);
 
+            // 提前暴露实例化后的 Bean（未进行赋值的 Bean）
+            if (beanDefinition.isSingleton()) {
+                Object finalBean = bean;
+                addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, finalBean));
+            }
+
             // 如果返回 false 会阻止 Spring 自动注入属性
             boolean continueWithPropertyPopulation = applyBeanPostProcessorsAfterInstantiation(beanName, bean);
             if (!continueWithPropertyPopulation) {
@@ -64,15 +70,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
             bean = initializeBean(beanName, bean, beanDefinition); // 初始化阶段，内部有（BeanPostProcess 逻辑）
         } catch (Exception e) {
-            throw new BeansException("Instantiate bean error: " + e);
+            throw new BeansException("Instantiate bean error: " + e, e.getCause());
         }
 
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
 
+        Object exposedObject = bean;
         if (beanDefinition.isSingleton()) {
-            addSingleton(beanName, bean);
+            // 主要目的是调用 ObjectFactory.getObject() 方法，将真实的 Bean 创建出来
+            // 普通的 Bean 的 processor.getEarlyBeanReference 方法无特殊操作，直接返回传入的 Bean
+            // 代理的 Bean 的 processor.getEarlyBeanReference 会创建出代理后的 Bean
+            exposedObject = getSingleton(beanName);
+            addSingleton(beanName, exposedObject);
         }
-        return bean;
+        return exposedObject;
     }
 
     private boolean applyBeanPostProcessorsAfterInstantiation(String beanName, Object bean) {
@@ -210,6 +221,17 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
 
         initMethod.invoke(bean);
+    }
+
+    protected Object getEarlyBeanReference(String beanName, Object bean) {
+        Object exposedObject = bean;
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof SmartInstantiationAwareBeanPostProcessor processor) {
+                exposedObject = processor.getEarlyBeanReference(exposedObject, beanName);
+                assert exposedObject != null;
+            }
+        }
+        return exposedObject;
     }
 
     public InstantiationStrategy getInstantiationStrategy() {

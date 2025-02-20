@@ -1,10 +1,11 @@
 package io.github.ileonli.winter.context.support;
 
 import io.github.ileonli.winter.testclass.support.*;
+import io.github.ileonli.winter.testclass.support.CircularTestClass1;
+import io.github.ileonli.winter.testclass.support.CircularTestClass2;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClassPathXmlApplicationContextTest {
 
@@ -87,6 +88,17 @@ public class ClassPathXmlApplicationContextTest {
         assertNotEquals(t3, t4);
         assertEquals("prototype", ((FactoryBeanPrototypeTest) t3).getS());
         assertEquals("prototype", ((FactoryBeanPrototypeTest) t4).getS());
+    }
+
+    @Test
+    public void circularReference() {
+        ClassPathXmlApplicationContext context =
+                new ClassPathXmlApplicationContext("classpath:context/support/CircularReference.xml");
+        CircularTestClass1 testClass1 = (CircularTestClass1) context.getBean("testClass1");
+        CircularTestClass2 testClass2 = (CircularTestClass2) context.getBean("testClass2");
+
+        assertSame(testClass1.getCircularTestClass2(), testClass2);
+        assertSame(testClass2.getCircularTestClass1(), testClass1);
     }
 
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	         http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="testClass1" class="io.github.ileonli.winter.testclass.support.CircularTestClass1">
+        <property name="circularTestClass2" ref="testClass2"/>
+    </bean>
+    <bean id="testClass2" class="io.github.ileonli.winter.testclass.support.CircularTestClass2">
+        <property name="circularTestClass1" ref="testClass1"/>
+    </bean>
+
+</beans>

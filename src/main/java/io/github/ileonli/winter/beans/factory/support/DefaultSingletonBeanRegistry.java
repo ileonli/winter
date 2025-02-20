@@ -2,6 +2,7 @@ package io.github.ileonli.winter.beans.factory.support;
 
 import io.github.ileonli.winter.beans.BeansException;
 import io.github.ileonli.winter.beans.factory.DisposableBean;
+import io.github.ileonli.winter.beans.factory.ObjectFactory;
 import io.github.ileonli.winter.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.ArrayList;
@@ -13,6 +14,10 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     private final Map<String, Object> singletonObjects = new HashMap<>();
 
+    private final Map<String, Object> earlySingletonObjects = new HashMap<>();
+
+    private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>();
+
     private final Map<String, DisposableBean> disposableBeans = new HashMap<>();
 
     @Override
@@ -22,11 +27,30 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     @Override
     public Object getSingleton(String beanName) {
-        return singletonObjects.get(beanName);
+        Object singletonObject = singletonObjects.get(beanName);
+        if (singletonObject == null) {
+            singletonObject = earlySingletonObjects.get(beanName);
+            if (singletonObject == null) {
+                ObjectFactory<?> singletonFactory = singletonFactories.get(beanName);
+                if (singletonFactory != null) {
+                    singletonObject = singletonFactory.getObject();
+                    // 从三级缓存放进二级缓存
+                    earlySingletonObjects.put(beanName, singletonObject);
+                    singletonFactories.remove(beanName);
+                }
+            }
+        }
+        return singletonObject;
     }
 
     public void addSingleton(String beanName, Object singletonObject) {
         singletonObjects.put(beanName, singletonObject);
+        earlySingletonObjects.remove(beanName);
+        singletonFactories.remove(beanName);
+    }
+
+    protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
+        singletonFactories.put(beanName, singletonFactory);
     }
 
     public void registerDisposableBean(String beanName, DisposableBean bean) {
