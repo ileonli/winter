@@ -1,8 +1,7 @@
 package io.github.ileonli.winter.aop.framework;
 
-import io.github.ileonli.winter.aop.AdvisedSupport;
 import io.github.ileonli.winter.aop.TargetSource;
-import io.github.ileonli.winter.aop.aspectj.AspectJExpressionPointcut;
+import io.github.ileonli.winter.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClass1;
 import io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClassImp1;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -14,7 +13,7 @@ public class ProxyFactoryTest {
 
     @Test
     public void getProxy() {
-        int addNum = 20;
+        final int addNum = 20;
 
         AopProxyTestClass1 testClass1 = new AopProxyTestClassImp1();
         TargetSource targetSource = new TargetSource(testClass1);
@@ -22,17 +21,21 @@ public class ProxyFactoryTest {
             int result = (int) invocation.proceed();
             return (Object) (result + addNum);
         };
-        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut(
-                "execution(* io.github.ileonli.winter.testclass.aop.framework.AopProxyTestClass1.*(..))");
 
-        AdvisedSupport support = new AdvisedSupport(targetSource, methodInterceptor, pointcut);
+        AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
+        advisor.setAdvice(methodInterceptor);
 
-        support.setProxyTargetClass(false);
-        AopProxyTestClass1 jdkProxy = (AopProxyTestClass1) new ProxyFactory(support).getProxy();
+        ProxyFactory proxyFactory = new ProxyFactory();
+        proxyFactory.setTargetSource(targetSource);
+        proxyFactory.addAdvisor(advisor);
+        proxyFactory.setInterfaces(AopProxyTestClassImp1.class.getInterfaces());
+
+        proxyFactory.setProxyTargetClass(false);
+        AopProxyTestClass1 jdkProxy = (AopProxyTestClass1) proxyFactory.getProxy();
         assertTrue(jdkProxy.getClass().getName().contains("$Proxy"));
 
-        support.setProxyTargetClass(true);
-        AopProxyTestClass1 cglib = (AopProxyTestClass1) new ProxyFactory(support).getProxy();
+        proxyFactory.setProxyTargetClass(true);
+        AopProxyTestClass1 cglib = (AopProxyTestClass1) proxyFactory.getProxy();
         assertTrue(cglib.getClass().getName().contains("CGLIB"));
     }
 

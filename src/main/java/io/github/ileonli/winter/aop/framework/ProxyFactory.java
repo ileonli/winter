@@ -2,12 +2,9 @@ package io.github.ileonli.winter.aop.framework;
 
 import io.github.ileonli.winter.aop.AdvisedSupport;
 
-public class ProxyFactory {
+public class ProxyFactory extends AdvisedSupport {
 
-    private final AdvisedSupport advisedSupport;
-
-    public ProxyFactory(AdvisedSupport advisedSupport) {
-        this.advisedSupport = advisedSupport;
+    public ProxyFactory() {
     }
 
     public Object getProxy() {
@@ -15,16 +12,15 @@ public class ProxyFactory {
     }
 
     private AopProxy createAopProxy() {
-        Object target = advisedSupport.getTargetSource().getTarget();
-        if (advisedSupport.isProxyTargetClass() ||
-                !hasInterface(target.getClass())) {
-            return new CglibAopProxy(advisedSupport);
+        if (this.isProxyTargetClass() ||
+                !hasInterface()) {
+            return new CglibAopProxy(this);
         }
-        return new JdkDynamicAopProxy(advisedSupport);
+        return new JdkDynamicAopProxy(this);
     }
 
-    private boolean hasInterface(Class<?> targetClass) {
-        return targetClass.getInterfaces().length > 0;
+    private boolean hasInterface() {
+        return getInterfaces().length > 0;
     }
 
 }

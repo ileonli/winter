@@ -27,7 +27,7 @@ public class DefaultAdvisorAutoProxyCreatorTest {
     }
 
     @Test
-    public void circularReferenceWithProxy() throws NoSuchMethodException {
+    public void circularReferenceWithProxy() {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "classpath:aop/framework/autoproxy/CircularReferenceWithProxy.xml");
         CircularWithProxyTestClass1 testClass1 = (CircularWithProxyTestClass1) context.getBean("testClass1");

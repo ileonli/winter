@@ -1,6 +1,9 @@
 package io.github.ileonli.winter.aop.framework.autoproxy;
 
-import io.github.ileonli.winter.aop.*;
+import io.github.ileonli.winter.aop.Advisor;
+import io.github.ileonli.winter.aop.ClassFilter;
+import io.github.ileonli.winter.aop.Pointcut;
+import io.github.ileonli.winter.aop.TargetSource;
 import io.github.ileonli.winter.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import io.github.ileonli.winter.aop.framework.ProxyFactory;
 import io.github.ileonli.winter.beans.BeansException;
@@ -9,7 +12,6 @@ import io.github.ileonli.winter.beans.factory.BeanFactoryAware;
 import io.github.ileonli.winter.beans.factory.config.SmartInstantiationAwareBeanPostProcessor;
 import io.github.ileonli.winter.beans.factory.support.DefaultListableBeanFactory;
 import org.aopalliance.aop.Advice;
-import org.aopalliance.intercept.MethodInterceptor;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,19 +45,21 @@ public class DefaultAdvisorAutoProxyCreator implements SmartInstantiationAwareBe
         try {
             Collection<AspectJExpressionPointcutAdvisor> advisors =
                     beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
+            ProxyFactory proxyFactory = new ProxyFactory();
 
             for (AspectJExpressionPointcutAdvisor advisor : advisors) {
                 ClassFilter classFilter = advisor.getPointcut().getClassFilter();
                 if (classFilter.matches(beanClass)) {
-                    AdvisedSupport advisedSupport = new AdvisedSupport();
                     TargetSource targetSource = new TargetSource(bean);
 
-                    advisedSupport.setTargetSource(targetSource);
-                    advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
-                    advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
-
-                    return new ProxyFactory(advisedSupport).getProxy();
+                    proxyFactory.setTargetSource(targetSource);
+                    proxyFactory.addAdvisor(advisor);
+                    proxyFactory.setInterfaces(beanClass.getInterfaces());
                 }
+            }
+
+            if (!proxyFactory.getAdvisors().isEmpty()) {
+                return proxyFactory.getProxy();
             }
         } catch (Exception e) {
             throw new BeansException("Error create proxy bean for: " + beanName, e);

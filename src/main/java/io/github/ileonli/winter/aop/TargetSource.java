@@ -8,8 +8,8 @@ public class TargetSource {
         this.target = target;
     }
 
-    public Class<?>[] getTargetClass() {
-        return this.target.getClass().getInterfaces();
+    public Class<?> getTargetClass() {
+        return this.target.getClass();
     }
 
     public Object getTarget() {
